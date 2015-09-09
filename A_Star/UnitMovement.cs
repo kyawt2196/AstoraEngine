@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 public class UnitMovement : MonoBehaviour {
 	public float movementSpeed;
@@ -81,18 +82,20 @@ public class UnitMovement : MonoBehaviour {
 	}
 
 	private void findPath(GridNode start, GridNode end){
-		List<GridNode> open = new List<GridNode>();
+		Stopwatch watch = new Stopwatch();
+		watch.Start();
+		PriorityGridNodeQueue queue = new PriorityGridNodeQueue();
 		Dictionary<GridNode,int> costSoFar = new Dictionary<GridNode,int>();
 		Dictionary<GridNode,GridNode> cameFrom = new Dictionary<GridNode,GridNode>();
-		open.Add (start);
+		queue.Enqueue (start,0);
 		costSoFar.Add(start, 0);
-		while(open.Count > 0){
-			//finds node with the lowest score to look at
-			GridNode current = findLowestScore(open);
-			open.Remove(current);
+		while(queue.Count > 0){
+			GridNode current = queue.Dequeue();
 			if(current.Equals(end)){
 				retraceRoute(start,current,cameFrom);
-				open.Clear ();
+				queue.Clear ();
+				watch.Stop();
+				print (watch.ElapsedMilliseconds);
 			}else{
 				List<GridNode> list = gameGrid.getNeighbours(current);
 				foreach(GridNode node in list){
@@ -104,7 +107,7 @@ public class UnitMovement : MonoBehaviour {
 							}
 							costSoFar.Add (node,cost);
 							node.score = cost + gameGrid.getHeuristic(node, end);
-							open.Add (node);
+							queue.Enqueue (node, node.score);
 							if(cameFrom.ContainsKey (node)){
 								cameFrom.Remove (node);
 							}
@@ -112,8 +115,9 @@ public class UnitMovement : MonoBehaviour {
 						}
 					}
 				}
+				
 			}
-
+			
 			explored = new HashSet<GridNode>(costSoFar.Keys);
 		}
 	}
@@ -161,3 +165,137 @@ public class UnitMovement : MonoBehaviour {
 
 
 }
+/*
+Stopwatch watch = new Stopwatch();
+		watch.Start();
+		List<GridNode> open = new List<GridNode>();
+		Dictionary<GridNode,int> costSoFar = new Dictionary<GridNode,int>();
+		Dictionary<GridNode,GridNode> cameFrom = new Dictionary<GridNode,GridNode>();
+		open.Add (start);
+		costSoFar.Add(start, 0);
+		while(open.Count > 0){
+			//finds node with the lowest score to look at
+			GridNode current = findLowestScore(open);
+			open.Remove(current);
+			if(current.Equals(end)){
+				retraceRoute(start,current,cameFrom);
+				open.Clear ();
+				watch.Stop();
+				print (watch.ElapsedMilliseconds);
+			}else{
+				List<GridNode> list = gameGrid.getNeighbours(current);
+				foreach(GridNode node in list){
+					if(!node.isBlock){
+						int cost = costSoFar[current] + gameGrid.getDistanceBetween(current,node);
+						if(!costSoFar.ContainsKey (node) || cost < costSoFar[node]){
+							if(costSoFar.ContainsKey (node)){
+								costSoFar.Remove (node);
+							}
+							costSoFar.Add (node,cost);
+							node.score = cost + gameGrid.getHeuristic(node, end);
+							open.Add (node);
+							if(cameFrom.ContainsKey (node)){
+								cameFrom.Remove (node);
+							}
+							cameFrom.Add (node, current);
+						}
+					}
+				}
+			}
+			
+			explored = new HashSet<GridNode>(costSoFar.Keys);
+		}
+ * 
+Stopwatch watch = new Stopwatch();
+		watch.Start();
+		PriorityGridNodeQueue queue = new PriorityGridNodeQueue();
+		Dictionary<GridNode,int> costSoFar = new Dictionary<GridNode,int>();
+		Dictionary<GridNode,GridNode> cameFrom = new Dictionary<GridNode,GridNode>();
+		queue.Enqueue (start,0);
+		costSoFar.Add(start, 0);
+		while(queue.Count > 0){
+			GridNode current = queue.Dequeue();
+			if(current.Equals(end)){
+				retraceRoute(start,current,cameFrom);
+				queue.Clear ();
+				watch.Stop();
+				print (watch.ElapsedMilliseconds);
+			}else{
+				List<GridNode> list = gameGrid.getNeighbours(current);
+				foreach(GridNode node in list){
+					if(!node.isBlock){
+						int cost = costSoFar[current] + gameGrid.getDistanceBetween(current,node);
+						if(!costSoFar.ContainsKey (node) || cost < costSoFar[node]){
+							if(costSoFar.ContainsKey (node)){
+								costSoFar.Remove (node);
+							}
+							costSoFar.Add (node,cost);
+							node.score = cost + gameGrid.getHeuristic(node, end);
+							queue.Enqueue (node, node.score);
+							if(cameFrom.ContainsKey (node)){
+								cameFrom.Remove (node);
+							}
+							cameFrom.Add (node, current);
+						}
+					}
+				}
+				
+			}
+			
+			explored = new HashSet<GridNode>(costSoFar.Keys);
+		}
+List<GridNode> openSet = new List<GridNode>();
+		HashSet<GridNode> closedSet = new HashSet<GridNode>();
+		openSet.Add(start);
+		
+		while (openSet.Count > 0) {
+			GridNode currentNode = openSet[0];
+			for (int i = 1; i < openSet.Count; i ++) {
+				if (openSet[i].fCost < currentNode.fCost || openSet[i].fCost == currentNode.fCost && openSet[i].hCost < currentNode.hCost) {
+					currentNode = openSet[i];
+				}
+			}
+			
+			openSet.Remove(currentNode);
+			closedSet.Add(currentNode);
+			
+			if (currentNode.Equals(end)) {
+				RetracePath(start,end);
+				return;
+			}
+			
+			foreach (GridNode neighbour in gameGrid.getNeighbours(currentNode)) {
+				if (neighbour.isBlock || closedSet.Contains(neighbour)) {
+					continue;
+				}
+				
+				int newMovementCostToNeighbour = currentNode.gCost + GetDistanceBetween(currentNode, neighbour);
+				if (newMovementCostToNeighbour < neighbour.gCost || !openSet.Contains(neighbour)) {
+					neighbour.gCost = newMovementCostToNeighbour;
+					neighbour.hCost = GetDistanceBetween(neighbour, end);
+					neighbour.parent = currentNode;
+					
+					if (!openSet.Contains(neighbour))
+						openSet.Add(neighbour);
+				}
+			}
+		}
+		explored = new HashSet<GridNode>(openSet);
+
+	private void RetracePath(GridNode startNode, GridNode endNode){
+		route.Clear ();
+		GridNode currentNode = endNode;
+		while(currentNode != startNode){
+			route.Push(currentNode);
+			currentNode = currentNode.parent;
+		}
+	}
+	private int GetDistanceBetween(GridNode nodeA, GridNode nodeB){
+		int dstX = Mathf.Abs(nodeA.gridPositionX - nodeB.gridPositionY);
+		int dstY = Mathf.Abs (nodeA.gridPositionY - nodeB.gridPositionY);
+		if(dstX>dstY)
+			return 14*dstY + 10*(dstX-dstY);
+		return 14*dstX + 10*(dstY-dstX);
+	}
+
+ */

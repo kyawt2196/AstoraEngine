@@ -8,6 +8,8 @@ using System;
 
 
 public class Grid : MonoBehaviour {
+
+	public bool showGrid;
 	public Vector2 gridWorldSize;
 	public float nodeDiameter;
 	public LayerMask SnorlaxMask;
@@ -108,10 +110,11 @@ public class Grid : MonoBehaviour {
 	}
 
 	void OnDrawGizmos(){
+
 		Gizmos.color = Color.black;
 		Vector3 centerFrame = new Vector3(gridWorldSize.x/2,0,gridWorldSize.x/2);
 		Gizmos.DrawWireCube(centerFrame, new Vector3(gridWorldSize.x,1,gridWorldSize.y));
-		if(grid != null){
+		if(grid != null && showGrid){
 			for(int i=0; i<gridLength; i++){
 				for(int n=0; n<gridHeight; n++){
 					Vector3 center = new Vector3(grid[i,n].worldPosition.x,0, grid[i,n].worldPosition.z);
