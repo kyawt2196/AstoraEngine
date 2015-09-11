@@ -16,14 +16,16 @@ public class Grid : MonoBehaviour {
 	public GridNode[,] grid;
 	public int boundarySize;
 
-	private int gridLength;
-	private int gridHeight;
+	public int gridLength;
+	public int gridHeight;
 
 
 	void Start(){
 		transform.position = Vector3.zero;
 		createGrid ();
 	}
+
+	//updates the grid everyframe
 	void Update(){
 		for(int i=0; i<gridLength; i++){
 			for(int n=0; n<gridHeight; n++){
@@ -31,6 +33,8 @@ public class Grid : MonoBehaviour {
 			}
 		}
 	}
+
+	//Creates grid with the size of Vector2 gridWorldSize
 	private void createGrid(){
 		gridLength = getArrayPosition(gridWorldSize.x);
 		gridHeight = getArrayPosition(gridWorldSize.y);
@@ -48,6 +52,7 @@ public class Grid : MonoBehaviour {
 	}
 
 
+	//returns a node from a legal vector3 position
 	public GridNode getNodeFromPosition(Vector3 position){
 		int x = getArrayPosition(position.x);
 		int y = getArrayPosition(position.z);
@@ -69,6 +74,7 @@ public class Grid : MonoBehaviour {
 		return temp;
 	}
 
+	//returns a list of surrounding nodes of a home node
 	public List<GridNode> getNeighbours(GridNode home){
 		List<GridNode> list = new List<GridNode>();
 		int x = home.gridPositionX;
@@ -84,6 +90,8 @@ public class Grid : MonoBehaviour {
 		return list;
 	}
 
+	//returns a node that is not blocked towards the player
+	//used for when player clicks on blocked node
 	public GridNode findNearestUnblockedNode(GridNode node, Vector3 playerPosition){
 		GridNode current = node;
 		//if(current != null){
@@ -105,12 +113,12 @@ public class Grid : MonoBehaviour {
 		return current;
 	}
 
+	//checks whether the two ints are within the bounds of an array
 	public bool withinArrayBounds(int x, int y){
 		return (x >= 0 && x < gridLength && y >=0 && y < gridHeight);
 	}
 
 	void OnDrawGizmos(){
-
 		Gizmos.color = Color.black;
 		Vector3 centerFrame = new Vector3(gridWorldSize.x/2,0,gridWorldSize.x/2);
 		Gizmos.DrawWireCube(centerFrame, new Vector3(gridWorldSize.x,1,gridWorldSize.y));
@@ -122,7 +130,7 @@ public class Grid : MonoBehaviour {
 					if(grid[i,n].isBlock){
 						Gizmos.color = Color.red;
 					}else{
-						Gizmos.color = Color.cyan;
+						Gizmos.color = Color.blue;
 					}
 					Gizmos.DrawWireCube(center, size);
 				}
