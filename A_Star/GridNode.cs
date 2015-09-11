@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-
-public class GridNode{	
+using System;
+public class GridNode : IComparable<GridNode>{	
 	public bool isBlock;
 	public Vector3 worldPosition;
 	
@@ -28,6 +28,19 @@ public class GridNode{
 		get{
 			return gCost+hCost;
 		}
+	}
+
+	public int CompareTo(GridNode other){
+		if(other != null){
+			if(this.score == other.score){
+				return 0;
+			}else if(this.score < other.score){
+				return -1;
+			}else{
+				return 1;
+			}
+		}
+
 	}
 }
 

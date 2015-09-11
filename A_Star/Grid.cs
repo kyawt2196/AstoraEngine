@@ -16,8 +16,8 @@ public class Grid : MonoBehaviour {
 	public GridNode[,] grid;
 	public int boundarySize;
 
-	private int gridLength;
-	private int gridHeight;
+	public int gridLength;
+	public int gridHeight;
 
 
 	void Start(){

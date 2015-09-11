@@ -84,16 +84,16 @@ public class UnitMovement : MonoBehaviour {
 	private void findPath(GridNode start, GridNode end){
 		Stopwatch watch = new Stopwatch();
 		watch.Start();
-		PriorityGridNodeQueue queue = new PriorityGridNodeQueue();
+		Heap<GridNode> heap = new Heap<GridNode>(gameGrid.gridHeight*gameGrid.gridLength);
 		Dictionary<GridNode,int> costSoFar = new Dictionary<GridNode,int>();
 		Dictionary<GridNode,GridNode> cameFrom = new Dictionary<GridNode,GridNode>();
-		queue.Enqueue (start,0);
+		heap.insert (start);
 		costSoFar.Add(start, 0);
-		while(queue.Count > 0){
-			GridNode current = queue.Dequeue();
+		while(heap.Count > 0){
+			GridNode current = heap.extract();
 			if(current.Equals(end)){
 				retraceRoute(start,current,cameFrom);
-				queue.Clear ();
+				heap.Clear ();
 				watch.Stop();
 				print (watch.ElapsedMilliseconds);
 			}else{
@@ -107,7 +107,7 @@ public class UnitMovement : MonoBehaviour {
 							}
 							costSoFar.Add (node,cost);
 							node.score = cost + gameGrid.getHeuristic(node, end);
-							queue.Enqueue (node, node.score);
+							heap.insert (node);
 							if(cameFrom.ContainsKey (node)){
 								cameFrom.Remove (node);
 							}
@@ -165,47 +165,8 @@ public class UnitMovement : MonoBehaviour {
 
 
 }
-/*
-Stopwatch watch = new Stopwatch();
-		watch.Start();
-		List<GridNode> open = new List<GridNode>();
-		Dictionary<GridNode,int> costSoFar = new Dictionary<GridNode,int>();
-		Dictionary<GridNode,GridNode> cameFrom = new Dictionary<GridNode,GridNode>();
-		open.Add (start);
-		costSoFar.Add(start, 0);
-		while(open.Count > 0){
-			//finds node with the lowest score to look at
-			GridNode current = findLowestScore(open);
-			open.Remove(current);
-			if(current.Equals(end)){
-				retraceRoute(start,current,cameFrom);
-				open.Clear ();
-				watch.Stop();
-				print (watch.ElapsedMilliseconds);
-			}else{
-				List<GridNode> list = gameGrid.getNeighbours(current);
-				foreach(GridNode node in list){
-					if(!node.isBlock){
-						int cost = costSoFar[current] + gameGrid.getDistanceBetween(current,node);
-						if(!costSoFar.ContainsKey (node) || cost < costSoFar[node]){
-							if(costSoFar.ContainsKey (node)){
-								costSoFar.Remove (node);
-							}
-							costSoFar.Add (node,cost);
-							node.score = cost + gameGrid.getHeuristic(node, end);
-							open.Add (node);
-							if(cameFrom.ContainsKey (node)){
-								cameFrom.Remove (node);
-							}
-							cameFrom.Add (node, current);
-						}
-					}
-				}
-			}
-			
-			explored = new HashSet<GridNode>(costSoFar.Keys);
-		}
- * 
+
+ /* 
 Stopwatch watch = new Stopwatch();
 		watch.Start();
 		PriorityGridNodeQueue queue = new PriorityGridNodeQueue();
@@ -297,5 +258,43 @@ List<GridNode> openSet = new List<GridNode>();
 			return 14*dstY + 10*(dstX-dstY);
 		return 14*dstX + 10*(dstY-dstX);
 	}
+	Stopwatch watch = new Stopwatch();
+		watch.Start();
+		PriorityGridNodeQueue queue = new PriorityGridNodeQueue();
+		Dictionary<GridNode,int> costSoFar = new Dictionary<GridNode,int>();
+		Dictionary<GridNode,GridNode> cameFrom = new Dictionary<GridNode,GridNode>();
+		queue.Enqueue (start,0);
+		costSoFar.Add(start, 0);
+		while(queue.Count > 0){
+			GridNode current = queue.Dequeue();
+			if(current.Equals(end)){
+				retraceRoute(start,current,cameFrom);
+				queue.Clear ();
+				watch.Stop();
+				print (watch.ElapsedMilliseconds);
+			}else{
+				List<GridNode> list = gameGrid.getNeighbours(current);
+				foreach(GridNode node in list){
+					if(!node.isBlock){
+						int cost = costSoFar[current] + gameGrid.getDistanceBetween(current,node);
+						if(!costSoFar.ContainsKey (node) || cost < costSoFar[node]){
+							if(costSoFar.ContainsKey (node)){
+								costSoFar.Remove (node);
+							}
+							costSoFar.Add (node,cost);
+							node.score = cost + gameGrid.getHeuristic(node, end);
+							queue.Enqueue (node, node.score);
+							if(cameFrom.ContainsKey (node)){
+								cameFrom.Remove (node);
+							}
+							cameFrom.Add (node, current);
+						}
+					}
+				}
+				
+			}
+			
+			explored = new HashSet<GridNode>(costSoFar.Keys);
+		}
 
  */
