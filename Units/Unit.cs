@@ -19,10 +19,6 @@ public class Unit : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		selectUnit ();
-
-
-
-
 	}
 
 	private void selectUnit(){
@@ -31,9 +27,8 @@ public class Unit : MonoBehaviour {
 			//this unprojects the 3d object into 2d space ie our GUI
 			Vector3 camPos = Camera.main.WorldToScreenPoint(transform.position);
 			camPos.y = Screen.height - camPos.y;
+
 			//Debug.Log (DragSelect.dragging);
-			
-			
 			if(DragSelect.selection.Contains(camPos)){
 				selected = true;
 			}else if(!Input.GetKey(KeyCode.LeftShift)){
@@ -55,10 +50,10 @@ public class Unit : MonoBehaviour {
 			}
 			DragSelect.dragging = false;
 		}
+
 		//Material[] mats = GetComponent<MeshRenderer>().materials;
 		if(selected){
-			//mats[1] = material;
-				
+			//mats[1] = material
 		}else{
 			//mats[1] = null;
 		}

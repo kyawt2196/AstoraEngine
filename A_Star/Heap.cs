@@ -9,7 +9,6 @@ public class Heap<T> where T : IComparable<T>{
 	public Heap(int size){
 		items = new T[size];
 		Count = 0;
-		
 	}
 	
 	public void insert(T item){
@@ -74,7 +73,21 @@ public class Heap<T> where T : IComparable<T>{
 		return (current-1)/2;
 	}
 }
-/*
+
+ /* 
+ * public void insert(T item){
+		if(Count == 0){
+			items[0] = item;
+		}else{
+			int current = Count;
+			items[current] = item;
+			while(items[current].CompareTo (items[parentOf (current)]) < 0){
+				swapItem (current, parentOf (current));
+				current = parentOf (current);
+			}
+		}
+		Count++;
+	}
  * public void insert(T item){
 		int current = Count;
 		items[current] = item;
@@ -104,7 +117,7 @@ public class Heap<T> where T : IComparable<T>{
 					current = right;
 				}
 			} else {
-				if(items[right] == null || items[left].CompareTo (items[right]) < 0) {
+				if(items[right] == null || items[left].CompareTo (items[right]) <= 0) {
 					swapItem(left, current);
 					current = left;
 				} else {
@@ -113,5 +126,29 @@ public class Heap<T> where T : IComparable<T>{
 				}
 			}
 		} while(true);
+	}
+
+public T extract(){
+		T temp = items[0];
+		items[0] = default(T);
+		int current = 0;
+		while(items[leftOf(current)] != null || items[rightOf(current)] != null){
+			if(items[leftOf(current)] == null){
+				swapItem(rightOf(current), current);
+				current = rightOf(current);
+			}else if(items[rightOf(current)] == null){
+				swapItem(leftOf(current), current);
+				current = leftOf(current);
+			}else{
+				if(items[leftOf(current)].CompareTo(items[rightOf(current)])<0){
+					swapItem(leftOf(current), current);
+					current = leftOf(current);
+				}else{
+					swapItem(rightOf(current), current);
+					current = rightOf(current);
+				}
+			}
+		}
+		return temp;
 	}
  */
