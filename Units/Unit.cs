@@ -5,16 +5,13 @@ public class Unit : MonoBehaviour {
 	private int health;
 
 	//public Material shipMaterial;
-
-
-	Material material;
+	public Material material;
 	public bool selected;
 	// Use this for initialization
 	void Start () {
 		selected = false;
 		material = new Material(Shader.Find("Outlined/Silhouette Only"));
 	}
-
 
 	// Update is called once per frame
 	void Update () {
@@ -34,8 +31,7 @@ public class Unit : MonoBehaviour {
 			}else if(!Input.GetKey(KeyCode.LeftShift)){
 				selected = false;
 			}
-			
-			
+				
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 			RaycastHit hit;
 			if(Physics.Raycast(ray, out hit))

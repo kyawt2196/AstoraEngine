@@ -3,13 +3,11 @@ using System.Collections;
 
 public class DragSelect : MonoBehaviour {
 	public GUIStyle selectBox;
-
 	public static Rect selection;
 	public static bool dragging;
 
 	private Vector2 startPos;
-
-
+	
 	// Use this for initialization
 	void Start () {
 		selectBox = new GUIStyle();

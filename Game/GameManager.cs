@@ -5,7 +5,6 @@ public class GameManager : MonoBehaviour {
 	public Transform boundary1;
 	public Transform boundary2;
 
-
 	public int numOfBounday;
 	public Vector2 worldSize;
 

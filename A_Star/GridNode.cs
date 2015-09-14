@@ -10,10 +10,6 @@ public class GridNode : IComparable<GridNode>{
 	public int score;
 	public int gridPositionX;
 	public int gridPositionY;
-	public int h_cost;
-	public int g_cost;
-	public int f_cost;
-
 
 	public GridNode(bool isBlock, Vector3 worldPosition, int x, int y){
 		this.isBlock = isBlock;

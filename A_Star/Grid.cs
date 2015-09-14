@@ -6,19 +6,15 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
-
 public class Grid : MonoBehaviour {
-
 	public bool showGrid;
 	public Vector2 gridWorldSize;
 	public float nodeDiameter;
 	public LayerMask SnorlaxMask;
-	public GridNode[,] grid;
-	public int boundarySize;
 
+	public GridNode[,] grid;
 	public int gridLength;
 	public int gridHeight;
-
 
 	void Start(){
 		transform.position = Vector3.zero;
@@ -50,7 +46,6 @@ public class Grid : MonoBehaviour {
 			}
 		}
 	}
-
 
 	//returns a node from a legal vector3 position
 	public GridNode getNodeFromPosition(Vector3 position){
@@ -130,7 +125,7 @@ public class Grid : MonoBehaviour {
 					if(grid[i,n].isBlock){
 						Gizmos.color = Color.red;
 					}else{
-						Gizmos.color = Color.blue;
+						Gizmos.color = Color.cyan;
 					}
 					Gizmos.DrawWireCube(center, size);
 				}
